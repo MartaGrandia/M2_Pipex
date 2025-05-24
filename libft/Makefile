@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/05/24 16:55:58 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/05/24 17:32:26 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,15 +66,15 @@ $(NAME): $(OBJS_LIBFT) $(OBJS_PRINTF) $(OBJS_GNL)
 $(DIR_OBJS):
 	@mkdir -p $(DIR_OBJS)
 
-$(DIR_OBJS)libft_%.o: $(DIR_LIBFT)%.c | $(DIR_OBJS)
+$(DIR_OBJS)libft_%.o: $(DIR_LIBFT)%.c Makefile includes/libft.h | $(DIR_OBJS)
 	@echo "$(SLATE) ⚙️  Compiling $(@F:libft_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 
-$(DIR_OBJS)printf_%.o: $(DIR_PRINTF)%.c | $(DIR_OBJS)
+$(DIR_OBJS)printf_%.o: $(DIR_PRINTF)%.c Makefile includes/ft_printf.h | $(DIR_OBJS)
 	@echo "$(SLATE) ⚙️  Compiling $(@F:printf_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 
-$(DIR_OBJS)gnl_%.o: $(DIR_GNL)%.c | $(DIR_OBJS)
+$(DIR_OBJS)gnl_%.o: $(DIR_GNL)%.c Makefile includes/get_next_line.h | $(DIR_OBJS)
 	@echo "$(SLATE) ⚙️  Compiling $(@F:gnl_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 	
