@@ -6,16 +6,14 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/05/11 15:19:03 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/05/24 16:10:31 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
-
 CC = cc
 AR = ar rcs
 RM = rm -f
-
 FLAGS = -Wall -Wextra -Werror -g
 
 GREEN = \033[38;5;114m   
@@ -25,9 +23,7 @@ RED = \033[0;31m
 RESET = \033[0m
 
 DIR_INC = includes/ 
-
 DIR_OBJS = objs/
-
 DIR_LIBFT = libft/
 DIR_PRINTF = printf/
 DIR_GNL = gnl/
@@ -52,7 +48,7 @@ OBJS_LIBFT = $(SRC_LIBFT:%.c=$(DIR_OBJS)libft_%.o)
 OBJS_PRINTF = $(SRC_PRINTF:%.c=$(DIR_OBJS)printf_%.o)
 OBJS_GNL = $(SRC_GNL:%.c=$(DIR_OBJS)gnl_%.o)
 
-$(DEP_FILES):.o=.d
+DEP_FILES = $(OBJS_LIBFT:%.o=%.d) $(OBJS_PRINTF:%.o=%.d) $(OBJS_GNL:%.o=%.d)
 
 all: $(NAME)
 
@@ -70,7 +66,7 @@ $(NAME): $(DIR_OBJS) $(OBJS_LIBFT) $(OBJS_PRINTF) $(OBJS_GNL)
 $(DIR_OBJS):
 	@mkdir -p $(DIR_OBJS)
 
-$(DIR_OBJS)libft_%.o: $(DIR_LIBFT)%.c Makefile  includes/libft.h
+$(DIR_OBJS)libft_%.o: $(DIR_LIBFT)%.c Makefile includes/libft.h
 	@echo "$(SLATE) ⚙️  Compiling $(@F:libft_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 
@@ -96,4 +92,5 @@ re: fclean all
 	@echo "$(SLATE) 🎉 Full recompilation complete!"
 
 .PHONY: all clean fclean re
--include: $(DEP_FILES)
+
+-include $(DEP_FILES)
