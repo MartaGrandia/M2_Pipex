@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/05/24 16:08:36 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/05/24 17:08:21 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,44 +46,51 @@ LIBFT = ./libft/libft.a
 # ─────────────────────────────────────────────────────────────
 # REGLAS
 # ─────────────────────────────────────────────────────────────
-all: $(LIBFT) $(NAME)
 
-$(LIBFT):
-	make -sC ./libft
+.PHONY: all clean fclean re libft
 
+# ALL: primero construir libft (siempre), luego pipex
+all: libft $(NAME)
+
+# Regla phony para libft: siempre ejecuta make dentro de libft
+libft:
+	@make -C ./libft
+
+# Compilar pipex, que depende de objetos y libft.a
 $(NAME): $(DIR_OBJS) $(OBJS) $(LIBFT)
-	@ $(CC) $(FLAGS) $(OBJS) -o $(NAME) $(LIBFT)	
+	@$(CC) $(FLAGS) $(OBJS) -o $(NAME) $(LIBFT)
 	@echo
-	@echo "$(GREEN)$(BOLD)✅ Library $(NAME) successfully created!$(RESET)"
-	@echo "$(TEAL) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
-	@echo "$(SLATE)  ➤ pipex files compiled: $(words $(SRC))$(RESET)"
-	@echo "$(TEAL) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"
+	@echo "$(GREEN)✅ Ejecutable $(NAME) creado correctamente!$(RESET)"
 	@echo
 
+# Crear carpeta objs si no existe
 $(DIR_OBJS):
-	@echo "$(SLATE) 🛠️  Creating objs directory..."
+	@echo "$(SLATE)🛠️  Creando carpeta de objetos...$(RESET)"
 	@mkdir -p $(DIR_OBJS)
 
-# Regla para compilar archivos .o desde archivos .c
-$(DIR_OBJS)%.o: $(DIR_SRC)%.c Makefile includes/pipex.h
-	@echo "$(SLATE) ⚙️  Compiling $(@F:%.o=%.c)..."
+# Compilar los archivos .c en .o con generación de dependencias .d
+$(DIR_OBJS)%.o: $(DIR_SRC)%.c Makefile includes/pipex.h | $(DIR_OBJS)
+	@echo "$(SLATE)⚙️  Compilando $< ...$(RESET)"
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 
+# Limpiar objetos y limpiar libft también
 clean:
-	@echo "$(SLATE) 🧹 Removing object files at pipex..."
+	@echo "$(SLATE)🧹 Limpiando objetos de pipex y libft...$(RESET)"
 	@$(RM) -r $(DIR_OBJS)
-	@make -sC ./libft clean
-	@echo "$(SLATE) ✅ Object files removed!"
+	@make clean -C ./libft
+	@echo "$(SLATE)✅ Objetos limpiados.$(RESET)"
 
+# Limpiar todo incluyendo ejecutable y librería
 fclean: clean
-	@echo "$(SLATE) 🗑️  Removing library pipex"
+	@echo "$(SLATE)🗑️  Limpiando ejecutable y librería libft...$(RESET)"
 	@$(RM) $(NAME)
-	@make -sC ./libft fclean
-	@echo "$(SLATE) ✅ fclean complete!"
+	@make fclean -C ./libft
+	@echo "$(SLATE)✅ Limpieza total completada.$(RESET)"
 
+# Recompilación completa
 re: fclean all
-	@echo "$(SLATE) 🎉 Full recompilation complete!"
+	@echo "$(SLATE)🎉 Recompilación completa!$(RESET)"
 
-.PHONY: all clean fclean re
-
+# Incluir dependencias automáticas
 -include $(DEP_FILES)
+
