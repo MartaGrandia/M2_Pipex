@@ -6,7 +6,7 @@
 #    By: mgrandia <mgrandia@student.42barcelon      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/06 16:16:34 by mgrandia          #+#    #+#              #
-#    Updated: 2025/05/24 16:10:31 by mgrandia         ###   ########.fr        #
+#    Updated: 2025/05/24 16:48:44 by mgrandia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,11 +48,11 @@ OBJS_LIBFT = $(SRC_LIBFT:%.c=$(DIR_OBJS)libft_%.o)
 OBJS_PRINTF = $(SRC_PRINTF:%.c=$(DIR_OBJS)printf_%.o)
 OBJS_GNL = $(SRC_GNL:%.c=$(DIR_OBJS)gnl_%.o)
 
-DEP_FILES = $(OBJS_LIBFT:%.o=%.d) $(OBJS_PRINTF:%.o=%.d) $(OBJS_GNL:%.o=%.d)
+DEP_FILES = $(OBJS:.o=.d)
 
 all: $(NAME)
 
-$(NAME): $(DIR_OBJS) $(OBJS_LIBFT) $(OBJS_PRINTF) $(OBJS_GNL)
+$(NAME): $(OBJS_LIBFT) $(OBJS_PRINTF) $(OBJS_GNL)
 	@$(AR) $(NAME) $(OBJS_LIBFT) $(OBJS_PRINTF) $(OBJS_GNL)	
 	@echo
 	@echo "$(GREEN)$(BOLD)✅ Library $(NAME) successfully created!$(RESET)"
@@ -66,15 +66,15 @@ $(NAME): $(DIR_OBJS) $(OBJS_LIBFT) $(OBJS_PRINTF) $(OBJS_GNL)
 $(DIR_OBJS):
 	@mkdir -p $(DIR_OBJS)
 
-$(DIR_OBJS)libft_%.o: $(DIR_LIBFT)%.c Makefile includes/libft.h
+$(DIR_OBJS)libft_%.o: $(DIR_LIBFT)%.c | $(DIR_OBJS)
 	@echo "$(SLATE) ⚙️  Compiling $(@F:libft_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 
-$(DIR_OBJS)printf_%.o: $(DIR_PRINTF)%.c Makefile includes/ft_printf.h
+$(DIR_OBJS)printf_%.o: $(DIR_PRINTF)%.c | $(DIR_OBJS)
 	@echo "$(SLATE) ⚙️  Compiling $(@F:printf_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 
-$(DIR_OBJS)gnl_%.o: $(DIR_GNL)%.c Makefile includes/get_next_line.h
+$(DIR_OBJS)gnl_%.o: $(DIR_GNL)%.c | $(DIR_OBJS)
 	@echo "$(SLATE) ⚙️  Compiling $(@F:gnl_%.o=%.c)..."
 	@$(CC) $(FLAGS) -MD -I$(DIR_INC) -c $< -o $@
 	
